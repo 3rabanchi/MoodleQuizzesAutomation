@@ -12,6 +12,8 @@ using TeachingTool.Services;
 using TeachingTool.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace TeachingTool
 {
@@ -28,7 +30,12 @@ namespace TeachingTool
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -113,7 +120,7 @@ namespace TeachingTool
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute("areaRoute", "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+                //routes.MapRoute("areaRoute", "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     name: "default",

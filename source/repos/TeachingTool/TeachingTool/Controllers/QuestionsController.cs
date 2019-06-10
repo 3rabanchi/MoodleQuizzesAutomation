@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TeachingTool.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Xml.Serialization;
+using TeachingTool.Models.ModelsToSerialize;
+using System.IO;
+using System.Xml;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace TeachingTool.Controllers
 {
     [Authorize]
-    [Area("Questions")]
-    [Route("questions")]
+    //[Area("Questions")]
+  //  [Route("Questions")]
     public class QuestionsController : Controller
     {
         private readonly TeachingToolDBContext _context;
@@ -23,7 +29,7 @@ namespace TeachingTool.Controllers
         }
 
         // GET: Questions
-        [Route("")]
+        [Route("Questions")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Questions.ToListAsync());
@@ -67,32 +73,67 @@ namespace TeachingTool.Controllers
             TempData["Type"] = strTypeValue;
             ViewData["Type"] = strTypeValue;
             question.type = strTypeValue;
-            if (ModelState.IsValid)
-            {
-                return View("Create2",question);
-            }
+            if (strTypeValue == "Językowy")
+                return View("Type", question);
+            else if (strTypeValue == "Developerski")
+                return View("ECOARMemory");
             return View();
         }
-        [Route("/Create/Type/{id}")]
-        public IActionResult Type(string id)
-        {
-            ViewData["Type"] = id;
-            var question = new Question();
-            question.type = id;
-            return View(question);
-        }
+        // [Route("Create/x86")]
+        // public IActionResult X86(string id)
+        //  {
+        //    Question question = new Question();
+        //    question.type = "x86";
+        //      return View(question);
+        //  }
+       // [HttpGet("[controller]/[action]/{rowCount}")]
         [HttpPost]
-        [Route("/Create/Type/{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Type(string id,[Bind("QuestionID,type,content,title")] Question question)
+        public async Task<JsonResult> X86(string cellValues,string title)
         {
+           var rows = JsonConvert.DeserializeObject<List<Row>>(cellValues);
+            title = title.Replace("\"","");
+            // Console.WriteLine(ss[0]);
+            System.Diagnostics.Debug.WriteLine("-----------------------------------");
+            System.Diagnostics.Debug.WriteLine(title);
+            System.Diagnostics.Debug.WriteLine("-----------------------------------");
+
+            StringBuilder sb = new StringBuilder("<table><tbody>", 10000);
+            int i = 0;
+            while (i < rows.Count())
+            {
+                StringBuilder tempsb = new StringBuilder("<tr>", 1000);
+                if (i < 3) {          
+                    tempsb.AppendFormat("<td><span style:\"width:150px;\">{0}</span></td><td><span>{1}</span></td><td><span>{2}</span></td></tr>", rows[i].FirstCell, rows[i].SecondCell, rows[i].ThirdCell);
+                    sb.Append(tempsb);
+                }
+                else
+                {
+                    string second = "{1:SA:%100%"+rows[i].SecondCell+"~%0%0000000000}";
+                    string third = "{1:SA:="+ rows[i].ThirdCell + "~%0%0000000000}";
+                    tempsb.AppendFormat("<td><span>{0}</span  style:\"width:150px;\"></td><td><span>{1}</span></td><td><span>{2}</span></td></tr>", rows[i].FirstCell, second, third);
+                    sb.Append(tempsb);
+                }
+                i++;
+            }
+            sb.Append("</tbody></ table > ");
+            System.Diagnostics.Debug.WriteLine("-----------------------------------");
+            System.Diagnostics.Debug.WriteLine(sb);
+            System.Diagnostics.Debug.WriteLine("-----------------------------------");
+            System.Diagnostics.Debug.WriteLine(title);
+            System.Diagnostics.Debug.WriteLine("-----------------------------------");
+
+            string strTitleValue = Request.Form["questionTitle"].ToString();
             string type = Convert.ToString(TempData["Type"]);
-            type = question.type;
-            ViewData["Type"] = type;
-            _context.Add(question);
+            Question question = new Question();
+            question.title = title;
+            question.type = "x86";
+            question.content = sb.ToString();
+           _context.Add(question);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // return RedirectToAction(nameof(Index));
+            return new JsonResult("DUPA");
         }
+
 
         // GET: Questions/Edit/5
         [Route("/Edit/{id}")]
@@ -181,6 +222,91 @@ namespace TeachingTool.Controllers
         private bool QuestionExists(int id)
         {
             return _context.Questions.Any(e => e.QuestionID == id);
+        }
+     
+        public async Task<IActionResult> Download(int id)
+        {
+
+            var _question = await _context.Questions.FindAsync(id);
+
+            if (_question == null)
+            {
+                return NotFound();
+            }
+
+            string filename = _question.title+".xml";
+            var path = Path.Combine(
+                           Directory.GetCurrentDirectory(),
+                           "wwwroot", filename);
+
+            var memory = new MemoryStream();
+
+            XmlDocument doc = new XmlDocument();
+
+                var XML = new XmlSerializer(typeof(quiz));
+
+                  quiz quiz = new quiz();
+                question question = new question();
+                name name = new name();
+                questiontext questiontext = new questiontext();
+                generalfeedback generalfeedback = new generalfeedback();
+
+                name.text = _question.title;
+                questiontext.text = _question.content;
+                questiontext.format = "html";
+                generalfeedback.text = "";
+                generalfeedback.format = "html";
+
+                question.name = name;
+                question.questiontext = questiontext;
+                question.generalfeedback = generalfeedback;
+
+                
+                question.penalty = "0.333333";
+                question.hidden = "0";
+                question.idnumber = "";
+                 question.type = "cloze";
+
+                quiz.question = question;
+
+                XML.Serialize(memory, quiz);
+    
+               
+                memory.Position = 0;
+
+          
+           
+            return File(memory, GetContentType(path), Path.GetFileName(path));
+            //var net = new System.Net.WebClient();
+            //var data = net.DownloadData(link);
+            //var content = new System.IO.MemoryStream(data);
+            //var contentType = "APPLICATION/octet-stream";
+            //var fileName = "something.bin";
+            //return File(content, contentType, fileName);
+        }
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".xml", "xml/test"}
+            };
         }
     }
 }

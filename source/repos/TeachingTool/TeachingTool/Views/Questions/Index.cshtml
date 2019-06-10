@@ -7,20 +7,14 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.title)
-            </th>
+            <th scope="col">Type</th>
+            <th scope="col">Content</th>
+            <th scope="col">Title</th>
             <th></th>
         </tr>
     </thead>
@@ -40,7 +34,7 @@
                 <a asp-action="Edit" asp-route-id="@item.QuestionID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.QuestionID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.QuestionID">Delete</a> |
-                <a>Download</a>
+                <a asp-action="Download" asp-route-id="@item.QuestionID">Download</a>
             </td>
         </tr>
 }
