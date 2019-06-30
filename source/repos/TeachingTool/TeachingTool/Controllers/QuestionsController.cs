@@ -97,25 +97,25 @@ namespace TeachingTool.Controllers
             System.Diagnostics.Debug.WriteLine(title);
             System.Diagnostics.Debug.WriteLine("-----------------------------------");
 
-            StringBuilder sb = new StringBuilder("<table><tbody>", 10000);
+            StringBuilder sb = new StringBuilder("<table>\n<tbody>\n", 10000);
             int i = 0;
             while (i < rows.Count())
             {
-                StringBuilder tempsb = new StringBuilder("<tr>", 1000);
+                StringBuilder tempsb = new StringBuilder("<tr>\n", 1000);
                 if (i < 3) {          
-                    tempsb.AppendFormat("<td><span style:\"width:150px;\">{0}</span></td><td><span>{1}</span></td><td><span>{2}</span></td></tr>", rows[i].FirstCell, rows[i].SecondCell, rows[i].ThirdCell);
+                    tempsb.AppendFormat("<td><span style:\"width:150px;\">{0}</span></td>\n<td><span>{1}</span></td>\n<td><span>{2}</span></td>\n</tr>\n", rows[i].FirstCell, rows[i].SecondCell, rows[i].ThirdCell);
                     sb.Append(tempsb);
                 }
                 else
                 {
                     string second = "{1:SA:%100%"+rows[i].SecondCell+"~%0%0000000000}";
                     string third = "{1:SA:="+ rows[i].ThirdCell + "~%0%0000000000}";
-                    tempsb.AppendFormat("<td><span>{0}</span  style:\"width:150px;\"></td><td><span>{1}</span></td><td><span>{2}</span></td></tr>", rows[i].FirstCell, second, third);
+                    tempsb.AppendFormat("<td><span>{0}</span  style:\"width:150px;\"></td>\n<td><span>{1}</span></td>\n<td><span>{2}</span></td>\n</tr>", rows[i].FirstCell, second, third);
                     sb.Append(tempsb);
                 }
                 i++;
             }
-            sb.Append("</tbody></ table > ");
+            sb.Append("\n</tbody>\n</table>");
             System.Diagnostics.Debug.WriteLine("-----------------------------------");
             System.Diagnostics.Debug.WriteLine(sb);
             System.Diagnostics.Debug.WriteLine("-----------------------------------");
