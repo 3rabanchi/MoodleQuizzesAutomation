@@ -192,6 +192,8 @@ namespace TeachingTool.Migrations
 
                     b.Property<string>("type");
 
+                    b.Property<string>("userToken");
+
                     b.HasKey("QuestionID");
 
                     b.ToTable("Questions");

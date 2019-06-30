@@ -75,7 +75,7 @@ namespace TeachingTool.Controllers
             question.type = strTypeValue;
             if (strTypeValue == "Językowy")
                 return View("Type", question);
-            else if (strTypeValue == "Developerski")
+            else if (strTypeValue == "Assembly")
                 return View("ECOARMemory");
             return View();
         }
@@ -88,7 +88,7 @@ namespace TeachingTool.Controllers
         //  }
        // [HttpGet("[controller]/[action]/{rowCount}")]
         [HttpPost]
-        public async Task<JsonResult> X86(string cellValues,string title)
+        public async Task<IActionResult> X86(string cellValues,string title)
         {
            var rows = JsonConvert.DeserializeObject<List<Row>>(cellValues);
             title = title.Replace("\"","");
@@ -128,10 +128,10 @@ namespace TeachingTool.Controllers
             question.title = title;
             question.type = "x86";
             question.content = sb.ToString();
-           _context.Add(question);
+            _context.Add(question);
             await _context.SaveChangesAsync();
-            // return RedirectToAction(nameof(Index));
-            return new JsonResult("DUPA");
+            return RedirectToAction(nameof(Index));
+          //  return new JsonResult("Succes");
         }
 
 
@@ -158,7 +158,7 @@ namespace TeachingTool.Controllers
         [HttpPost]
         [Route("/Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuestionID,type,content,title")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("QuestionID,type,content,title,userToken")] Question question)
         {
             if (id != question.QuestionID)
             {
