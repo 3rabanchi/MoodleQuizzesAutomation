@@ -13,7 +13,6 @@ namespace TeachingTool.Models
         public string type { get; set; }
         public string content { get; set; }
         public string title { get; set; }
-
         public string userToken { get; set; }
     }
     public enum QuestionTypes

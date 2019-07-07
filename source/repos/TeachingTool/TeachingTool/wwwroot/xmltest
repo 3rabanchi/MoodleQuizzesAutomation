@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<quiz xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <question>
+    <name>
+      <text>TEST</text>
+    </name>
+    <questiontext>
+      <text>cokolwiek</text>
+    </questiontext>
+    <generalfeedback>
+      <text>nic</text>
+    </generalfeedback>
+    <penalty>0.333333</penalty>
+    <hidden>0</hidden>
+    <idnumber />
+  </question>
+</quiz>

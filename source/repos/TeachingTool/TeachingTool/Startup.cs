@@ -46,7 +46,11 @@ namespace TeachingTool
             services.AddDbContext<TeachingToolDBContext>(
                 options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            }
+           )
                .AddEntityFrameworkStores<TeachingToolDBContext>()
                .AddDefaultTokenProviders();
 
@@ -55,10 +59,10 @@ namespace TeachingTool
                 // Password settings.
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
+          //      options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequiredLength = 3;
+              //  options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -95,6 +99,12 @@ namespace TeachingTool
                 options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
 
             });
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
 
             //services.AddDbContext<TeachingToolContext>(options =>
             //        options.UseSqlServer(Configuration.GetConnectionString("TeachingToolContext")));

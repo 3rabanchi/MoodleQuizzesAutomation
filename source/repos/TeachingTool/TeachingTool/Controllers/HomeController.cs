@@ -17,7 +17,7 @@ namespace TeachingTool.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "Teaching tool's purpose description";
 
             return View();
         }

@@ -1,0 +1,64 @@
+﻿@model TeachingTool.Models.Question
+@{
+    ViewData["Title"] = "ECOARMemory";
+}
+
+
+<h2>x86 assembly data transfers</h2>
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <button class="btn btn-primary">Add row </button>
+        </div>
+        <form asp-action="X86" id="Test">
+            <label asp-for="title" class="control-label">Title of the questions:</label>
+                  <input asp-for="title" class="form-control" id="questionTitle" />
+            <span asp-validation-for="title" class="text-danger"></span>
+
+            <table id="inputs" class="table table-striped">
+                <caption>Insert the values in the cells bellow:</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Instruction</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input class="active" id="01" /></td>
+                        <td><input class="active" id="02" /></td>
+                        <td><input class="active" id="03" /></td>
+                    </tr>
+                    <tr>
+                        <td><input class="active" id="11" /></td>
+                        <td><input class="active" id="12" /></td>
+                        <td><input class="active" id="13" /></td>
+                    </tr>
+                    <tr>
+                        <td><input class="active" id="21" /></td>
+                        <td><input class="active" id="22" /></td>
+                        <td><input class="active" id="23" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <input type="submit" value="Submit question"  class="btn btn-default" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

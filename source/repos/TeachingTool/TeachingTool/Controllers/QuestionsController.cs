@@ -116,12 +116,7 @@ namespace TeachingTool.Controllers
                 i++;
             }
             sb.Append("\n</tbody>\n</table>");
-            System.Diagnostics.Debug.WriteLine("-----------------------------------");
-            System.Diagnostics.Debug.WriteLine(sb);
-            System.Diagnostics.Debug.WriteLine("-----------------------------------");
-            System.Diagnostics.Debug.WriteLine(title);
-            System.Diagnostics.Debug.WriteLine("-----------------------------------");
-
+        
             string strTitleValue = Request.Form["questionTitle"].ToString();
             string type = Convert.ToString(TempData["Type"]);
             Question question = new Question();
