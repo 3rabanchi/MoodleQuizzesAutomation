@@ -43,22 +43,5 @@ namespace TeachingTool.Services
 
             return client.SendEmailAsync(msg);
         }
-        //public task sendemailasync(string email, string subject, string htmlmessage)
-        //{
-        //    var client = new smtpclient("smtp.gmail.com", 587)
-        //    {
-        //        usedefaultcredentials = false,
-        //        credentials = new networkcredential("sultan.aljanabi@gmail.com", "s6u5l4t3a2n1"),
-        //        enablessl = true,
-        //    };
-        //    var mailmessage = new mailmessage
-        //    {
-        //        from = new mailaddress("sultan.aljanabi@gmail.com")
-        //    };
-        //    mailmessage.to.add(email);
-        //    mailmessage.subject = subject;
-        //    mailmessage.body = htmlmessage;
-        //    return client.sendmailasync(mailmessage);
-        //}
     }
 }
